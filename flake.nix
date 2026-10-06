@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Current cursor-cli. Separate from nixpkgs-unstable so the Guix pin
+    # does not move; nixos-26.05 still has the May 2026 CLI.
+    nixpkgs-cursor.url = "github:NixOS/nixpkgs/nixos-unstable";
+    hermes-agent.url = "github:NousResearch/hermes-agent";
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -18,7 +22,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, dotfiles, nvim, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nixpkgs-cursor, hermes-agent, home-manager, dotfiles, nvim, ... }:
     let
       # nixpkgs for the Mac (standalone home-manager).
       darwinSystem = "aarch64-darwin";
@@ -46,13 +50,14 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit dotfiles nvim; };
+            home-manager.extraSpecialArgs = { inherit dotfiles nvim hermes-agent nixpkgs-cursor; };
             home-manager.users.max = {
               imports = [
                 ./home/common.nix
                 ./home/git.nix
                 ./home/bitcoin.nix
                 ./home/guix-builds.nix
+                ./home/agents.nix
                 ./home/linux.nix
               ];
             };
@@ -62,11 +67,12 @@
 
       homeConfigurations."maxedwards" = home-manager.lib.homeManagerConfiguration {
         pkgs = darwinPkgs;
-        extraSpecialArgs = { inherit dotfiles nvim; };
+        extraSpecialArgs = { inherit dotfiles nvim hermes-agent nixpkgs-cursor; };
         modules = [
           ./home/common.nix
           ./home/git.nix
           ./home/bitcoin.nix
+          ./home/agents.nix
           ./home/mac.nix
         ];
       };

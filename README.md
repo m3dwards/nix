@@ -21,6 +21,7 @@ modules/                   # shared NixOS system modules (Linux only)
 home/                      # shared home-manager modules
   common.nix               # cross-platform: fish, starship, tools, nvim, dotfiles
   bitcoin.nix              # Bitcoin dev repo bootstrap (both machines)
+  agents.nix               # Cursor Agent CLI + Hermes Agent CLI (both machines)
   guix-builds.nix          # Guix build/signing repos + env (buildcorsair only)
   linux.nix / mac.nix      # per-platform username, home dir, rebuild alias
 ```
