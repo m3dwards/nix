@@ -11,16 +11,6 @@
 
   programs.fish.enable = true;
 
-  # Allow generic (non-Nix) dynamically-linked ELF binaries to run — e.g. the
-  # npm-installed GitHub Copilot CLI, which ships a prebuilt linux-x64 binary.
-  # nix-ld provides the stub loader plus these shared libraries.
-  programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs; [
-    stdenv.cc.cc.lib
-    glib
-    libsecret
-  ];
-
   security.sudo.wheelNeedsPassword = false;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

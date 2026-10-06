@@ -95,31 +95,6 @@ nix run home-manager/release-26.05 -- switch --flake ~/source/nix#maxedwards
 After the first switch the `rebuild` alias runs
 `home-manager switch --flake ~/source/nix#maxedwards`.
 
-## GitHub Copilot CLI
-
-Copilot CLI is intentionally **not** managed by Nix. The nixpkgs package lags
-well behind upstream and is wrapped with `--no-auto-update`, so its `/update`
-command can't keep it current.
-
-Instead, home-manager provides Node.js 24 (with a modern npm), and npm's global
-prefix is set to `~/.npm-global` (via `~/.npmrc`) with that bin directory on
-`PATH`. Install Copilot CLI globally with npm — no `sudo` and no writing to the
-read-only `/nix/store`:
-
-```bash
-npm install -g @github/copilot
-```
-
-Then run `copilot` to start it, and use `/update` inside the CLI to upgrade to
-the latest release. This is the one tool deliberately kept outside Nix so it can
-auto-update.
-
-> On NixOS (buildcorsair), the npm build ships a prebuilt, generic
-> dynamically-linked binary that won't run out of the box. `programs.nix-ld` is
-> enabled in `modules/common.nix` to provide the loader and libraries it needs.
-> If a Copilot update ever fails with a missing `lib*.so`, add that library to
-> `programs.nix-ld.libraries`.
-
 ## Guix shell
 
 Use the bundled dev shell for Guix work on Linux:
