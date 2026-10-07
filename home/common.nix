@@ -8,6 +8,7 @@
     direnv
     gnumake
     neovim
+    python3
   ];
 
   programs.tmux = {
