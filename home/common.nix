@@ -7,9 +7,15 @@
     htop
     direnv
     gnumake
-    tmux
     neovim
   ];
+
+  programs.tmux = {
+    enable = true;
+    extraConfig = ''
+      set -g mouse on
+    '';
+  };
 
   programs.fish = {
     enable = true;
