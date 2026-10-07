@@ -71,5 +71,6 @@
     packages = with pkgs; [
       kdePackages.kate
     ];
+    linger = true;
   };
 }
