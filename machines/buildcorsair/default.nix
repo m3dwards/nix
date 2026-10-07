@@ -6,6 +6,7 @@
     ../../modules/users.nix
     ../../modules/ssh.nix
     ../../modules/guix.nix
+    ../../modules/podman.nix
   ];
 
   networking.hostName = "buildcorsair";
