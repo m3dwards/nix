@@ -1,4 +1,4 @@
-{ pkgs, hermes-agent, nixpkgs-cursor, ... }:
+{ pkgs, lib, config, hermes-agent, nixpkgs-cursor, ... }:
 let
   # cursor-cli is unfree. This import is per-platform so the same module
   # works for buildcorsair (x86_64-linux) and the Mac (aarch64-darwin).
@@ -7,6 +7,12 @@ let
     config.allowUnfreePredicate = pkg:
       nixpkgs-cursor.lib.getName pkg == "cursor-cli";
   };
+
+  # Secrets stay outside the Nix store. Create/maintain this file yourself
+  # (0600). On buildcorsair it should contain at least:
+  #   OLLAMA_API_KEY=...
+  #   A2A_PEER_TOKENS=hpminihermes:<token>
+  hermesSecretsFile = "${config.home.homeDirectory}/.hermes/secrets.env";
 in
 {
   imports = [
@@ -17,7 +23,34 @@ in
     cursorPkgs.cursor-cli
   ];
 
-  # CLI only (`hermes` on PATH, state in ~/.hermes). The messaging gateway
-  # stays off; enable services.hermes-agent once a provider key is available.
   programs.hermes-agent.enable = true;
+
+  # Always-on messaging/A2A gateway on Linux only (buildcorsair). The Mac
+  # keeps the CLI via programs.hermes-agent; enable services there later if
+  # wanted. Requires users.users.<name>.linger = true on NixOS.
+  services.hermes-agent = lib.mkIf pkgs.stdenv.isLinux {
+    enable = true;
+    gateway.enable = true;
+    # `hermes gateway` needs the `run` subcommand for a foreground ExecStart.
+    extraArgs = [ "run" ];
+
+    # Non-secret process env → written into ~/.hermes/.env on activation.
+    environment = {
+      A2A_AGENT_NAME = "buildcorsair";
+      A2A_HOST = "0.0.0.0";
+      A2A_PORT = "9900";
+      A2A_TRUSTED_PEERS = "hpminihermes";
+      A2A_PUBLIC_URL = "http://192.168.1.129:9900";
+    };
+
+    # Secret keys only — path must be a string (not a Nix path literal).
+    environmentFiles = [ hermesSecretsFile ];
+
+    # Deep-merged into ~/.hermes/config.yaml; other keys (e.g. model from
+    # `hermes model`) are preserved.
+    settings = {
+      agent.reasoning_effort = "high";
+      gateway.platforms.a2a.enabled = true;
+    };
+  };
 }

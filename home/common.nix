@@ -7,6 +7,8 @@
     htop
     direnv
     gnumake
+    gcc
+    tree-sitter
     neovim
     python3
   ];
