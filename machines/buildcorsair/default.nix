@@ -21,9 +21,12 @@
   # Networking is managed by NetworkManager.
   networking.networkmanager.enable = true;
 
-  # This host is LAN-only (see modules/ssh.nix). Open Hermes A2A so
-  # hpminihermes (and other LAN peers) can reach the builder gateway.
-  networking.firewall.allowedTCPPorts = [ 9900 ];
+  # This host is LAN-only (see modules/ssh.nix). Hermes A2A (9900) and
+  # web dashboard (9119) for LAN peers / your browser.
+  networking.firewall.allowedTCPPorts = [
+    9900
+    9119
+  ];
 
   # Locale / time / keyboard.
   time.timeZone = "Europe/London";

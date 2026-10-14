@@ -34,6 +34,16 @@ in
     # `hermes gateway` needs the `run` subcommand for a foreground ExecStart.
     extraArgs = [ "run" ];
 
+    # Web UI + API on the LAN (auth gate engages for non-loopback binds).
+    # Set username/password once with an interactive:
+    #   hermes dashboard --host 0.0.0.0 --port 9119 --no-open
+    # before/after switch, or the unit fails closed with no provider.
+    backend = {
+      mode = "dashboard";
+      host = "0.0.0.0";
+      port = 9119;
+    };
+
     # Non-secret process env → written into ~/.hermes/.env on activation.
     environment = {
       A2A_AGENT_NAME = "buildcorsair";
@@ -41,6 +51,8 @@ in
       A2A_PORT = "9900";
       A2A_TRUSTED_PEERS = "hpminihermes";
       A2A_PUBLIC_URL = "http://192.168.1.129:9900";
+      # Host/Origin clients use when opening the dashboard on the LAN.
+      HERMES_DASHBOARD_PUBLIC_URL = "http://192.168.1.129:9119";
     };
 
     # Secret keys only — path must be a string (not a Nix path literal).
