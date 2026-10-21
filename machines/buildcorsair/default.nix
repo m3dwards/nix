@@ -3,6 +3,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/common.nix
+    ../../modules/ccache.nix
     ../../modules/users.nix
     ../../modules/ssh.nix
     ../../modules/guix.nix
