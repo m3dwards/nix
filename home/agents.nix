@@ -63,6 +63,9 @@ in
     settings = {
       agent.reasoning_effort = "high";
       gateway.platforms.a2a.enabled = true;
+      # Telegram bot (@buildcorsairhermes_bot); the token lives in
+      # ~/.hermes/secrets.env as TELEGRAM_BOT_TOKEN, merged into .env on activation.
+      gateway.platforms.telegram.enabled = true;
     };
   };
 }
