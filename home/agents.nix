@@ -66,6 +66,15 @@ in
       # Telegram bot (@buildcorsairhermes_bot); the token lives in
       # ~/.hermes/secrets.env as TELEGRAM_BOT_TOKEN, merged into .env on activation.
       gateway.platforms.telegram.enabled = true;
+      # Home target for this DM. `deliver = "all"` and a bare `telegram` cron
+      # target resolve here. Must be declarative: on a managed (home-manager)
+      # install /sethome's config/.env writes are refused, and it still replies
+      # "Home channel set", so setting it in-chat silently does nothing.
+      gateway.platforms.telegram.home_channel = {
+        platform = "telegram";
+        chat_id = "35916293";
+        name = "Max";
+      };
     };
   };
 }
