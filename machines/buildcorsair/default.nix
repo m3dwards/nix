@@ -29,6 +29,13 @@
     9119
   ];
 
+  # nix-ld: provide a real dynamic loader at /lib64 so generic (non-NixOS)
+  # dynamically linked binaries can run. Needed because Hermes's bundled
+  # Python 3.14 (python-build-standalone) is a glibc-dynamic build; without
+  # this it dies on exit 127 with the stub-ld message, which makes bare
+  # `python`/`python3` unusable (home-manager's python3.13 still works).
+  programs.nix-ld.enable = true;
+
   # Locale / time / keyboard.
   time.timeZone = "Europe/London";
   i18n.defaultLocale = "en_GB.UTF-8";
