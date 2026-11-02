@@ -62,6 +62,9 @@ in
     # `hermes model`) are preserved.
     settings = {
       agent.reasoning_effort = "high";
+      # Memory budget. Default 2200 chars fills up in weeks; the limit is checked
+      # per write, so raise it here rather than trimming hard-won facts.
+      memory.memory_char_limit = 3000;
       gateway.platforms.a2a.enabled = true;
       # Telegram bot (@buildcorsairhermes_bot); the token lives in
       # ~/.hermes/secrets.env as TELEGRAM_BOT_TOKEN, merged into .env on activation.
@@ -77,4 +80,17 @@ in
       };
     };
   };
+
+  # Kanban dispatch spawns each worker through `systemd-run --user --scope`, which needs a user
+  # bus or runtime dir. The unit inherits neither, so every worker spawn failed instantly with
+  # "systemd-run --user --scope is unavailable" and a card sat in `ready` for twelve days while
+  # nothing reported it (2026-11-02). The hermes module builds Service.Environment from a fixed
+  # set and exposes no option to extend it, so this is a drop-in rather than a serviceConfig
+  # merge: additive, cannot clobber HERMES_HOME/PATH, and rolled back with the generation.
+  # Deliberately NOT DBUS_SESSION_BUS_ADDRESS: with XDG_RUNTIME_DIR alone `systemd-run --user
+  # --scope` succeeds on this host, while adding the bus address makes it hang.
+  xdg.configFile."systemd/user/hermes-agent.service.d/10-runtime-dir.conf".text = ''
+    [Service]
+    Environment=XDG_RUNTIME_DIR=%t
+  '';
 }
