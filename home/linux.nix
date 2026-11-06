@@ -3,6 +3,8 @@
   home.username = "max";
   home.homeDirectory = "/home/max";
 
+  home.packages = with pkgs; [ gh ];
+
   services.gpg-agent = {
     enable = true;
     pinentry.package = pkgs.pinentry-curses;
