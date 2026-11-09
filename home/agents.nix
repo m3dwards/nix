@@ -98,4 +98,16 @@ in
     [Service]
     Environment=XDG_RUNTIME_DIR=%t
   '';
+
+  # The unit's PATH is the module's fixed bin path (hermes, bash, coreutils, git) and has never
+  # included the system profile, so `shutil.which("systemd-run")` returns None inside the gateway.
+  # The probe then reports "systemd-run --user --scope is unavailable" with a message about a
+  # missing user D-Bus session, which is wrong, and every kanban worker spawn is refused until the
+  # board goes into infrastructure cooldown. `Environment=` replaces a variable rather than
+  # appending, so the module's directories are restated here alongside the system profile and
+  # systemd's own bin.
+  xdg.configFile."systemd/user/hermes-agent.service.d/20-path.conf".text = ''
+    [Service]
+    Environment=PATH=/run/current-system/sw/bin:/etc/profiles/per-user/${config.home.username}/bin:${lib.makeBinPath [ config.services.hermes-agent.package pkgs.bashInteractive pkgs.coreutils pkgs.git pkgs.systemd ]}
+  '';
 }
