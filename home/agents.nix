@@ -78,6 +78,11 @@ in
         chat_id = "35916293";
         name = "Max";
       };
+      # Cron output is a message to Max, not a job receipt. With the default (true) every
+      # delivery arrives wrapped in "Cronjob Response: <name> (job_id: …) ------------- ... To
+      # stop or manage this job, send me a new message", which reads like a machine talking.
+      # Declarative because a managed install's own config writes are refused.
+      cron.wrap_response = false;
     };
   };
 
