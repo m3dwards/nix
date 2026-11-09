@@ -11,6 +11,7 @@
     tree-sitter
     neovim
     python3
+    awscli2
   ];
 
   programs.tmux = {
