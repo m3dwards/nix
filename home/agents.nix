@@ -62,6 +62,10 @@ in
     # `hermes model`) are preserved.
     settings = {
       agent.reasoning_effort = "high";
+      # Self-improvement notices ("💾 Self-improvement review: Skill X patched …") are noise on his
+      # phone. "off" keeps the review running — it still patches skills and writes memory — and only
+      # silences the chat notice. Per-platform override exists, but one setting covers every surface.
+      display.memory_notifications = "off";
       # Memory budget. Default 2200 chars fills up in weeks; the limit is checked
       # per write, so raise it here rather than trimming hard-won facts.
       memory.memory_char_limit = 3000;
