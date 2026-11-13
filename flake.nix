@@ -93,8 +93,9 @@
 
         # Libraries for a local Bitcoin Core build (`cmake -B build` from
         # ~/source/bitcoin). gcc and cmake are already user packages; this shell
-        # puts Boost, libevent, SQLite, and Cap'n Proto on CMake's search path.
-        # Matches CMake defaults: wallet and IPC on, GUI and ZMQ off.
+        # puts the libraries on CMake's search path. Wallet and IPC are CMake
+        # defaults. ZMQ, USDT, and the GUI stay off until -DWITH_ZMQ=ON,
+        # -DWITH_USDT=ON, and -DBUILD_GUI=ON.
         bitcoin = linuxPkgs.mkShell {
           packages = with linuxPkgs; [
             cmake
@@ -104,6 +105,14 @@
             libevent
             sqlite
             capnproto
+            zeromq
+            libsodium
+            libsystemtap
+            qrencode
+            qt6.qtbase
+            qt6.qttools
+            qt6.qtwayland
+            libglvnd
           ];
         };
       };
