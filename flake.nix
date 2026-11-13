@@ -32,6 +32,7 @@
 
       # Guix (from unstable) for the dev shell on Linux.
       linuxSystem = "x86_64-linux";
+      linuxPkgs = nixpkgs.legacyPackages.${linuxSystem};
       guixPkgs = import nixpkgs {
         system = linuxSystem;
         overlays = [
@@ -77,16 +78,34 @@
         ];
       };
 
-      devShells.${linuxSystem}.guix = guixPkgs.mkShell {
-        packages = with guixPkgs; [
-          guix
-          git
-          fish
-        ];
-        shellHook = ''
-          export PATH="${guixPkgs.guix}/bin:$PATH"
-          exec ${guixPkgs.fish}/bin/fish -l
-        '';
+      devShells.${linuxSystem} = {
+        guix = guixPkgs.mkShell {
+          packages = with guixPkgs; [
+            guix
+            git
+            fish
+          ];
+          shellHook = ''
+            export PATH="${guixPkgs.guix}/bin:$PATH"
+            exec ${guixPkgs.fish}/bin/fish -l
+          '';
+        };
+
+        # Libraries for a local Bitcoin Core build (`cmake -B build` from
+        # ~/source/bitcoin). gcc and cmake are already user packages; this shell
+        # puts Boost, libevent, SQLite, and Cap'n Proto on CMake's search path.
+        # Matches CMake defaults: wallet and IPC on, GUI and ZMQ off.
+        bitcoin = linuxPkgs.mkShell {
+          packages = with linuxPkgs; [
+            cmake
+            pkg-config
+            python3
+            boost
+            libevent
+            sqlite
+            capnproto
+          ];
+        };
       };
     };
 }
