@@ -7,6 +7,7 @@
     htop
     direnv
     gnumake
+    cmake
     gcc
     tree-sitter
     neovim
