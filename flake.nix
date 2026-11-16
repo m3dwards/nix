@@ -93,14 +93,17 @@
 
         # Libraries for a local Bitcoin Core build (`cmake -B build` from
         # ~/source/bitcoin). gcc and cmake are already user packages; this shell
-        # puts the libraries on CMake's search path. Wallet and IPC are CMake
-        # defaults. ZMQ, USDT, and the GUI stay off until -DWITH_ZMQ=ON,
-        # -DWITH_USDT=ON, and -DBUILD_GUI=ON.
+        # puts the libraries on CMake's search path. clang and llvm are the same
+        # LLVM version, so coverage builds can use clang with llvm-cov and
+        # llvm-profdata. Wallet and IPC are CMake defaults. ZMQ, USDT, and the
+        # GUI stay off until -DWITH_ZMQ=ON, -DWITH_USDT=ON, and -DBUILD_GUI=ON.
         bitcoin = linuxPkgs.mkShell {
           packages = with linuxPkgs; [
             cmake
             pkg-config
             python3
+            llvmPackages.clang
+            llvmPackages.llvm
             boost
             libevent
             sqlite
