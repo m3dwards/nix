@@ -19,6 +19,10 @@
     enable = true;
     extraConfig = ''
       set -g mouse on
+      # `on`, not the default `external`: external still lets tmux set the outer
+      # clipboard itself, but drops OSC 52 coming from applications — which is
+      # how nvim reaches the Mac clipboard over ssh.
+      set -g set-clipboard on
     '';
   };
 
