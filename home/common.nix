@@ -47,6 +47,14 @@
       source = nvim;
       recursive = true;
     };
+    # clangd parses with the compiler's flags from a checkout's
+    # compile_commands.json; these two are gcc-only and clang logs each one on
+    # every parse. Global rather than a .clangd per checkout, which would be an
+    # untracked file in every worktree.
+    ".config/clangd/config.yaml".text = ''
+      CompileFlags:
+        Remove: [-fno-extended-identifiers, -fstack-reuse=none]
+    '';
   };
 
   # Let home-manager manage itself

@@ -117,6 +117,13 @@
             qt6.qtwayland
             libglvnd
           ];
+          # clangd parses every source file with the flags the build used, so
+          # every configure in this shell writes build/compile_commands.json.
+          # CMake initialises a cache variable from the environment variable of
+          # the same name, so a plain `cmake -B build` picks it up.
+          shellHook = ''
+            export CMAKE_EXPORT_COMPILE_COMMANDS=ON
+          '';
         };
       };
     };
