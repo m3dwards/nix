@@ -11,6 +11,14 @@
     gcc
     tree-sitter
     neovim
+    # Neovim language tooling lives here rather than in Mason: Mason's installers
+    # need npm/go/unzip on PATH and then drop prebuilt binaries outside the store.
+    # unzip stays for the few tools Mason still fetches itself (codelldb).
+    stylua
+    markdownlint-cli2
+    clang-tools
+    pyright
+    unzip
     python3
     awscli2
   ];
